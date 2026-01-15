@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Guía Matchups Akali</title>
+<style>
+body { font-family: 'Segoe UI', sans-serif; background:#0f172a; color:#e5e7eb; padding:20px; }
+.container { max-width:1600px; margin:auto; }
+.filters { display:flex; gap:15px; margin-bottom:15px; flex-wrap:wrap; }
+input, select { padding:8px 12px; border-radius:8px; border:none; }
+table { width:100%; border-collapse:collapse; }
+th,td { padding:10px; border-bottom:1px solid #334155; }
+th { background:#020617; position:sticky; top:0; }
+tr:hover { background:#1e293b; }
+.badge { padding:4px 10px; border-radius:12px; font-weight:bold; font-size:12px; }
+.facil { background:#22c55e; }
+.normal { background:#3b82f6; }
+.media { background:#eab308; color:#000; }
+.dificil { background:#f97316; }
+.muy-dificil { background:#ef4444; }
+img.champ { width:40px; height:40px; border-radius:50%; vertical-align:middle; margin-right:8px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🗡️ Guía Matchups Akali</h1>
+
+<div class="filters">
+<input type="text" id="search" placeholder="Buscar campeón..." oninput="filtrar()">
+<select id="dif" onchange="filtrar()">
+<option value="todos">Todas las dificultades</option>
+<option value="facil">Fácil</option>
+<option value="normal">Normal</option>
+<option value="media">Media</option>
+<option value="dificil">Difícil</option>
+<option value="muy-dificil">Muy difícil</option>
+</select>
+<select id="linea" onchange="filtrar()">
+<option value="todos">Todas las líneas</option>
+<option value="mid">Mid</option>
+<option value="top">Top</option>
+</select>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Campeón</th><th>Dificultad</th><th>Línea</th><th>Summoners</th>
+<th>Runas</th><th>Items</th><th>Nivel</th><th>Consejos</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<script>
+const data = [
+  {
+    "c": "Aatrox",
+    "d": "dificil",
+    "l": "top",
+    "s": "TP+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield+2nd Wind",
+    "n": "6+",
+    "t": "No tienes mucho potencial para ganar antes del nivel 6. Lleva Dorans Shield y Second Wind. Mantente a distancia segura farmeando. Él te puede atrapar si entras, así que espera al nivel 6. Una vez en nivel 6 es matable pero farmea desde lejos. Usa tu ultimate para pasar por encima de sus Q, o usa E o tu shroud para esquivarlas. Intenta llevarlo bajo tu torreta y busca jugadas all-in.",
+    "img": "images/aatrox.png"
+  },
+  {
+    "c": "Ahri",
+    "d": "dificil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "Banshee 3er",
+    "n": "6+",
+    "t": "Espera hasta nivel 6 para atacar a menos que falle un charm bajo tu torre. ¡¡¡NO SEAS AGRESIVO HASTA NIVEL 6!!! Una vez nivel 6, destrúyela. Compra Banshee's Veil como tercer objeto y posiblemente Merc Treads si su support también es AP o tienen jungle AP. Esquiva sus charms porque eso configura el resto de su combo y le permite pokear seguro. Cada vez que te charme usa shroud inmediatamente. Tu W también es genial para evitar sus habilidades en general y crear oportunidades para trades cortos. Una vez nivel 6 engagea cuando su charm o R estén en cooldown ya que tu potencial de burst superará su daño en all-ins. Con su charm arriba, probablemente lo usará cuando intentes hacer E2 hacia ella causando que falle, así que ten eso en cuenta.",
+    "img": "images/ahri.png"
+  },
+  {
+    "c": "Akshan",
+    "d": "medio",
+    "l": "mid",
+    "s": "TP+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Compra Dorans Shield. Usa habilidades para farmear seguro. Ten cuidado con los minions entre ambos para esquivar su Q. Espera hasta nivel 6 para ser agresivo.",
+    "img": "images/akshan.png"
+  },
+  {
+    "c": "Ambessa",
+    "d": "muy-dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conq/Fleet",
+    "i": "D.Shield",
+    "n": "2026-03-01 00:00:00",
+    "t": "Ve Conqueror o Fleet Footwork. Matchup difícil para Akali. Abusa de los niveles tempranos tanto como puedas, tienes más poder early. Si ella usa Q tradea con una Q. Usa E para alejarte cuando intente usar Q2 ya que ese es la mayor parte de su daño. Kiteala y guarda/usa shroud (W) cuando intente dashear hacia ti o para esquivar su cc. Evita trades extendidos debido a su sustain y daño base. Castígala cuando esté en cooldown. No spamees habilidades innecesariamente; asegúrate de siempre tener suficiente energía para escapar.",
+    "img": "images/ambessa.png"
+  },
+  {
+    "c": "Anivia",
+    "d": "facil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Ring",
+    "n": "2+",
+    "t": "Fácil, solo no te golpeen sus Q. Nivel 2+ NO te dejes golpear por sus Q porque su E hace TRIPLE daño si te golpea su Q. Usa shroud si te golpea su Q.",
+    "img": "images/anivia.png"
+  },
+  {
+    "c": "Annie",
+    "d": "medio",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Una vez que tu vida baja de 75%, evita sus habilidades a toda costa para prevenir ser stunneado + combo. Cuando su stun esté down puedes buscar pokearla. Una vez nivel 6 ella es muy squishy. Intenta congelar waves bajo tu torre y hacer jugadas all-in.",
+    "img": "images/annie.png"
+  },
+  {
+    "c": "Aurelion Sol",
+    "d": "medio",
+    "l": "mid",
+    "s": "TP/Flash+Ignite",
+    "r": "Electrocute",
+    "i": "Banshee late",
+    "n": "6+",
+    "t": "Si tienes problemas con este matchup, considera llevar Teleport. No es tan fuerte pre-6 así que llevar Dorans Ring está sobre la mesa si estás familiarizado con su kit. Capitaliza en su vulnerabilidad temprana y baja movilidad. Esquiva sus Q evitando caminos rectos, y tradea agresivamente en bursts cortos. En nivel 6 busca oportunidades all-in, especialmente cuando su flash esté down. Roamea seguido para igualar o castigar sus roaming plays. No te extiendas bajo su torre sin E o W, de lo contrario te perseguirá libremente. Compra Banshee's como 5to/6to objeto.",
+    "img": "images/aurelionsol.png"
+  },
+  {
+    "c": "Aurora",
+    "d": "facil",
+    "l": "mid",
+    "s": "TP+Ignite",
+    "r": "Electrocute",
+    "i": "Storm Surge",
+    "n": "6+",
+    "t": "Utiliza tu shroud cuando te acerques a ella con tu Q. Puedes usar ult o flash para salir de su ult. No seas codicioso antes de nivel 6. Nivel 6+ ella es squishy y ganas la línea. Busca combo R + E en ella.",
+    "img": "images/aurora.png"
+  },
+  {
+    "c": "Azir",
+    "d": "dificil",
+    "l": "mid",
+    "s": "TP+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Hace mucho poke, farmea seguro. Dorans Shield. Cuando lance soldados solo intenta estar fuera de rango.",
+    "img": "images/azir.png"
+  },
+  {
+    "c": "Brand",
+    "d": "facil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "Botas early",
+    "n": "3+",
+    "t": "No te pares junto a minions cuando corra para usar E en ellos. Siempre corre alrededor para que no te golpee con W. Campeón fácil para esquivar habilidades. Comprar botas tempranas puede ser útil.",
+    "img": "images/brand.png"
+  },
+  {
+    "c": "Cassiopeia",
+    "d": "medio",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "3+",
+    "t": "Evita ser chunkeada fuera de lane. Baitea sus Q (corre en rango para hacer que use Q y sigue corriendo hacia ella para hacer un combo sorpresa). Está bien matar antes de nivel 6 si eres bueno. Convierte a esa perra en comida de serpiente. Busca combo ultimate engage.",
+    "img": "images/cassiopeia.png"
+  },
+  {
+    "c": "Cho'Gath",
+    "d": "facil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "3+",
+    "t": "Intenta esquivar su Q. Si estás top lane vs Cho'gath, puedes pelear nivel 3 porque haces más daño que él. Cuando use su Q, sal con E o esquívala corriendo. Difícil pokearlo porque se cura mucho pero cuando llegas a nivel 6 es fácil de matar top lane. Mid lane tienes que desgastarlo con algunos combos y cuando esté al 70% de vida puedes hacer all-in.",
+    "img": "images/chogath.png"
+  },
+  {
+    "c": "Corki",
+    "d": "facil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Ring",
+    "n": "3+",
+    "t": "Evita tomar muchos autos con su E activo. Deberías poder esquivar su Q fácilmente. Si intenta auto y Q deberías poder combearlo. Es un campeón de corto rango y realmente no puede jugar agresivo. Post nivel 6, intenta combearlo con ult pero es más probable matar antes de nivel 6. Muy Squishy.",
+    "img": "images/corki.png"
+  },
+  {
+    "c": "Darius",
+    "d": "dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield+2nd Wind",
+    "n": "6+",
+    "t": "Evita que te golpee con auto W nivel 1. Mantente seguro y farmea hasta nivel 3. Si estás en rango cercano sin forma de escapar simplemente puede perseguirte así que evita usar tu E en minions. Post 6 ganas.",
+    "img": "images/darius.png"
+  },
+  {
+    "c": "Diana",
+    "d": "medio",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Conqueror",
+    "i": "Storm Surge",
+    "n": "3+",
+    "t": "Ve Conqueror. Baitea su W corriendo hacia ella. Si dashea hacia ti con su E deberías poder contrarrestarla con tu E y hacer un combo increíble. Puedes usar tu ult para dashear fuera de su ult.",
+    "img": "images/diana.png"
+  },
+  {
+    "c": "Ekko",
+    "d": "facil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Ring",
+    "n": "1+",
+    "t": "Fácil hacerle mucho daño. Nivel 1 esquiva su Q, golpéalo con Q/pasivo. Si intenta usar E en ti, usa E de vuelta hacia él. Usa shroud para evitar tomar daño mientras te stunnea.",
+    "img": "images/ekko.png"
+  },
+  {
+    "c": "Fiora",
+    "d": "dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "Oblivion 20min",
+    "n": "6+",
+    "t": "en cuidado con su parry. Casi siempre va a usar su parry para evitar tu R2. Juega lento contra ella. No uses todas las habilidades de una vez. No dejes que se te ponga encima y espera a que ella use Q primero. Si se extiende cerca de tu torre, puedes usar tu E para combearla. ¡Consigue Oblivion Orb antes de los 20 minutos!",
+    "img": "images/fiora.png"
+  },
+  {
+    "c": "Fizz",
+    "d": "facil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Ring",
+    "n": "3+",
+    "t": " Si hace Q, puedes hacerle E mientras está en medio de Q. Si usa su E para intentar limpiar wave, puedes esperarlo y luego hacerle E o Q para ralentizarlo y luego combo E. Puedes baitear su E corriendo hacia él pretendiendo que vas a hacerle Q. No te golpee su ult.",
+    "img": "images/fizz.png"
+  },
+  {
+    "c": "Galio",
+    "d": "igualado",
+    "l": "mid",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "Riftmaker",
+    "n": "6+",
+    "t": "Ve Conqueror. Siempre que intente golpear con W o E mantente a máximo rango lejos de él. Si intenta golpearte con uno solo usa E lejos o shroud. Si se lanza hacia ti, puedes usar tu E hacia él. No desperdicies tus spells.",
+    "img": "images/galio.png"
+  },
+  {
+    "c": "Gangplank",
+    "d": "muy-dificil",
+    "l": "top",
+    "s": "TP+Ignite",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Esta línea es difícil hasta nivel 6 porque es un bully de línea muy bueno contra Akali. No juegues agresivo para nada. Mantente fuera de rango de sus barriles o intenta eliminarlos de forma segura antes de que los pueda explotar. Una vez que llegas a nivel 6 él es inmóvil y haces más daño y eres libre de perseguirlo en este punto. ¡¡¡¡SOBREVIVE LA LÍNEA HASTA 6!!!!",
+    "img": "images/gangplank.png"
+  },
+  {
+    "c": "Garen",
+    "d": "facil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "1+",
+    "t": "Mientras no desperdicies tu E, deberías ganar cada trade. Solo usa E cuando Garen use Q junto a ti. Baitea sus habilidades.",
+    "img": "images/garen.png"
+  },
+  {
+    "c": "Gnar",
+    "d": "medio",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": " Esquiva sus boomerangs. Cuando vaya a CS sin boomerangs, usa bushes en top lane para obtener ventaja. Es squishy sin su mega gnar. Puedes matar fácilmente nivel 6+ siempre que su mega gnar no esté activo.",
+    "img": "images/gnar.png"
+  },
+  {
+    "c": "Gragas",
+    "d": "medio",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Asegúrate de no correr demasiado hacia sus minions. No quieres ser golpeado por su stun a menos que hagas más daño que él. Baitea sus Q. Si fallas tus E en él eres vulnerable. Puedes matar nivel 6.",
+    "img": "images/gragas.png"
+  },
+  {
+    "c": "Gwen",
+    "d": "dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Muy difícil aterrizar tu E. No uses nada excepto tu Q para pokearla. Si intenta golpearte con Q, podrías intentar golpearla con E y hacer combo.",
+    "img": "images/gwen.png"
+  },
+  {
+    "c": "Irelia",
+    "d": "dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "3+",
+    "t": " Intentará obtener ventaja en línea nivel 1. Para lidiar con esto, haz que tome daño nivel 1 cuando intente autoatacarte o a minions. Intenta zonearla con tu Q. No te hagan cheese y mueras.",
+    "img": "images/irelia.png"
+  },
+  {
+    "c": "Jax",
+    "d": "dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "3+",
+    "t": "Casi siempre intentará empezar con E y esquivar tu pasivo y luego correr hacia ti y perseguirte. Esperar hasta nivel 3 es mejor para ser agresivo. Usa shroud cada vez que intente saltarte.",
+    "img": "images/jax.png"
+  },
+  {
+    "c": "Jayce",
+    "d": "dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Intenta no tomar poke temprano con su forma de rango. Intenta farmear seguro hasta nivel 6. Post nivel 6 tienes más movilidad para asegurar un kill.",
+    "img": "images/jayce.png"
+  },
+  {
+    "c": "Kassadin",
+    "d": "facil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "1+",
+    "t": "Juega agresivo nivel 1. Lleva Dorans Shield. Nunca estés en rango de su W o para ser autoatacado por él. Gana línea en todas las etapas pero no falles tus Q en él.",
+    "img": "images/kassadin.png"
+  },
+  {
+    "c": "Katarina",
+    "d": "facil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Ring",
+    "n": "1+",
+    "t": "Intenta no dejar que use su E para esquivar tu E. No uses E cuando haya algo a lo que pueda saltar para esquivarlo. Puedes jugar agresivo nivel 1. Juega agresivo pero nunca te comprometas a usar tu E a menos que sea justo después de que use su E. Mantente alejado de sus dagas rebotantes. Si usa ult puedes usar tu ult para alejarte.",
+    "img": "images/katarina.png"
+  },
+  {
+    "c": "Kayle",
+    "d": "facil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "1+",
+    "t": " Ganas toda la línea siempre que juegues agresivamente. Cuando corras hacia ella, haz sidestep para esquivar su Q. La única forma en que gana es si corres hacia ella sin pensar.",
+    "img": "images/kayle.png"
+  },
+  {
+    "c": "LeBlanc",
+    "d": "dificil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Mantente seguro e intenta llegar a nivel 6. Siempre intentará hacer Q, W, Auto así que evita eso. Su E te revela en shroud si te golpea así que asegúrate de estar detrás de minions o fuera de su rango. Es squishy así que busca kills en nivel 6.",
+    "img": "images/leblanc.png"
+  },
+  {
+    "c": "Lissandra",
+    "d": "medio",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Asegúrate de que no haya minions entre tú y ella para que no pueda extender su Q para golpearte. No intentes jugar agresivo hasta nivel 6 a menos que desperdicie su W. Juega seguro hasta nivel 6, luego busca kills.",
+    "img": "images/lissandra.png"
+  },
+  {
+    "c": "Malphite",
+    "d": "facil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield+2nd Wind",
+    "n": "4+",
+    "t": ": Dorans Shield y Second Wind. Fácil ganar nivel 4+. Se queda sin mana rápidamente y es fácil hacerle daño. Una vez que llegas a nivel 6 es difícil que escape de ti. Si puedes congelar wave bajo torre puedes perseguirlo fácilmente.",
+    "img": "images/malphite.png"
+  },
+  {
+    "c": "Malzahar",
+    "d": "medio",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "Zhonyas post Shadow",
+    "n": "3+",
+    "t": " Usa tu Q para deshacerte de su waveclear. Puedes last hitear sus voidlings. Cuando use spells en minions, puedes correr hacia él y hacer daño. Línea fácil si dejas que use spells primero. Consigue Zhonyas después de Shadowflame.",
+    "img": "images/malzahar.png"
+  },
+  {
+    "c": "Mordekaiser",
+    "d": "dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Ve Conqueror. Mantente seguro hasta nivel 6. Aléjate de su rango de spell y no corras hacia él pasando tus minions.",
+    "img": "images/mordekaiser.png"
+  },
+  {
+    "c": "Nasus",
+    "d": "medio",
+    "l": "top",
+    "s": "Teleport",
+    "r": "Conqueror",
+    "i": "D.Shield+2nd Wind",
+    "n": "2026-05-01 00:00:00",
+    "t": "Dorans Shield + Second Wind. Temprano, juega tan agresivamente como sea posible sin empujar waves demasiado fuerte. Zonéalo de minions y fuérzalo a usar E para last hitear minions. Asegúrate de estar wardeando para evitar ganks. Intenta congelar waves bajo tu torre para negarle capacidad de stackear. Temprano si la wave no está bajo tu torre pokéalo fuera de la wave parándote entre él y la wave para negar CS. Si se acerca puedes hacer all-in y matarlo o bajarlo lo suficiente para que tenga que resetear. Hasta que tenga un objeto defensivo eres más fuerte que él, permitiéndote forzarlo a perder mucho CS y tomar resets malos.",
+    "img": "images/nasus.png"
+  },
+  {
+    "c": "Orianna",
+    "d": "dificil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": " Juega seguro y mátala nivel 6. No seas codicioso last hiteando minions. Ella no tiene movilidad para alcanzarte. Si se extiende, flash ult.",
+    "img": "images/orianna.png"
+  },
+  {
+    "c": "Ornn",
+    "d": "medio",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "3+",
+    "t": "Ve Conqueror. Aléjate de paredes cuando pelees y de su pilar. Haz pequeños trades contra él hasta que sea momento de matarlo. No hace mucho daño a menos que te knockee.",
+    "img": "images/ornn.png"
+  },
+  {
+    "c": "Pantheon",
+    "d": "muy-dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "Late",
+    "t": "Countera a Akali muy fuerte como ultimate lane bully. No hay mucho que hacer contra él hasta late game así que juega muy seguro. Intenta matar cuando jungle venga a ayudar con gank.",
+    "img": "images/pantheon.png"
+  },
+  {
+    "c": "Qiyana",
+    "d": "medio",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "1",
+    "t": "Intenta jugar agresivo en nivel 1. Una vez que obtenga su Q y W mantente detrás de minions. Entra por Q e intenta usar tu dash E para esquivar su Q. No estés muy cerca de las paredes porque su primer objeto hace daño.",
+    "img": "images/qiyana.png"
+  },
+  {
+    "c": "Renekton",
+    "d": "dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "1 y 6+",
+    "t": " Puedes ganar en nivel 1 y eso es todo hasta nivel 6. Asume que su spell nivel 1 es W. Es un lane bully así que intenta jugar seguro y no juegues agresivo hasta nivel 6 y luego dale con todo.",
+    "img": "images/renekton.png"
+  },
+  {
+    "c": "Riven",
+    "d": "facil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Fácil de matar. Mantén distancia de sus spells y shroud cuando sea necesario. Mata nivel 6 pero ten cuidado con su dash.",
+    "img": "images/riven.png"
+  },
+  {
+    "c": "Rumble",
+    "d": "dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Juega seguro hasta nivel 6. Es un AP lane bully. Ve Conqueror. No puede bullyear demasiado porque sus spells que te bullean también empujan la wave. Usa tus spells para farmear seguro y no te golpeen sus spells.",
+    "img": "images/rumble.png"
+  },
+  {
+    "c": "Ryze",
+    "d": "medio",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "3+",
+    "t": ": Busca jugar agresivo nivel 3+. Si te golpea con E, usa tu shroud. No tomes su combo completo y retrocede. Nunca te extiendas a su torre antes de 6 porque te perseguirá duramente.",
+    "img": "images/ryze.png"
+  },
+  {
+    "c": "Sett",
+    "d": "dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Ve Conqueror. Juega increíblemente seguro hasta nivel 6. Hace demasiado daño para jugar agresivamente. Usa shroud cuando intente combearte. Una vez nivel 6 tienes movilidad para esquivar su W. Haces más daño después de nivel 6. Si está en rango para autoatacarte solo usa shroud.\n",
+    "img": "images/sett.png"
+  },
+  {
+    "c": "Shen",
+    "d": "muy-dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "Nunca",
+    "t": " TE DESTRUIRÁ. No pelees agresivamente y baitea su taunt. Busca trades cortos y bursty. Si se acerca demasiado, usa tu W y E para desengagear. Evita tower divearlo a toda costa porque él sobresale convirtiendo jugadas agresivas en contraataques defensivos. La única ventaja que Akali tiene en este matchup es que puedes hacer E en su ult/teleport. Si ejecutas esto exitosamente cuando intente ultear bot, literalmente puedes hacer E2 a través del mapa hacia él. Esta es una jugada arriesgada en ranked pero puede ser muy gratificante si se ejecuta correctamente.",
+    "img": "images/shen.png"
+  },
+  {
+    "c": "Swain",
+    "d": "medio",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "Oblivion 1er",
+    "n": "6+",
+    "t": "Compra Oblivion Orb temprano (primer objeto cuando recallees). Mátalo fácilmente en nivel 6. Usa spells para sobrevivir su poke. Esquiva su E a toda costa.",
+    "img": "images/swain.png"
+  },
+  {
+    "c": "Sylas",
+    "d": "facil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Conqueror",
+    "i": "Oblivion 1er",
+    "n": "3+",
+    "t": "Ve Conqueror. Consigue Oblivion Orb como primer objeto. Es muy fácil ganarle en línea si eres lo suficientemente agresivo. Una vez que llega a cierto porcentaje de vida, puede usar W en ti y curarse toneladas. Puedes pelearle pre nivel 6 si esquivas sus Q. Cuando use spells para farmear puedes jugar agresivamente. En nivel 5 puedes matarlo si intenta dashear hacia ti igniteándolo para cancelar la curación y entrándole.",
+    "img": "images/sylas.png"
+  },
+  {
+    "c": "Syndra",
+    "d": "muy-dificil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "No juegues agresivo para nada hasta nivel 6. Corre hacia minions pretendiendo last hitearlos y luego retrocede para hacer que desperdicie su Q. Cuando su Q esté down puedes intentar acosarla. En general, juega seguro. En nivel 6 puedes hacer combo R + E en ella.",
+    "img": "images/syndra.png"
+  },
+  {
+    "c": "Talon",
+    "d": "medio",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Asegúrate de no ser golpeado por ambas partes de su W. Si te golpean ambas partes de su W puede hacerte Q desde distancia y dashear hacia ti y su pasivo hará mucho daño de sangrado. Juega a distancia segura para que no pueda conseguir ambas partes de su W. Puedes ganar línea lentamente. Si corres demasiado cerca necesitas esperar y baitear su W. Usa shroud después de usar tu pasivo. Espera hasta nivel 6 para saltarle si tienes mucho rango.",
+    "img": "images/talon.png"
+  },
+  {
+    "c": "Twisted Fate",
+    "d": "medio",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Su ult puede revelarte fuera del shroud. Empuja wave así que juega seguro. Si hay chance de hacer daño intenta golpear con E. Intenta esperar hasta nivel 6 para matar.",
+    "img": "images/twistedfate.png"
+  },
+  {
+    "c": "Urgot",
+    "d": "dificil",
+    "l": "top",
+    "s": "Flash+TP",
+    "r": "Conqueror",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "No seas agresivo hasta nivel 6. Usa shroud cuando use su minigun después de ultear.",
+    "img": "images/urgot.png"
+  },
+  {
+    "c": "Veigar",
+    "d": "facil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Ring",
+    "n": "1+",
+    "t": "Juega agresivo y esquiva sus Q/W. Intentará golpear su Q en un minion y en ti. Usará su Q para farmear. Intenta zonearlo de minions. Destrúyelo nivel 6+.",
+    "img": "images/veigar.png"
+  },
+  {
+    "c": "Viktor",
+    "d": "dificil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Intentará hacerte Q auto nivel 1. No lo dejes seguir haciéndolo. Llega a nivel 6 y destrúyelo. Zonéalo hasta entonces. Usa shroud para acercarte y pokearlo con Q/E.",
+    "img": "images/viktor.png"
+  },
+  {
+    "c": "Vladimir",
+    "d": "medio",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Fácil sobrevivir la línea. Párate detrás de minions para evitar sus spells. Baitea sus spells. Post 6 combéalo lentamente y busca un kill.",
+    "img": "images/vladimir.png"
+  },
+  {
+    "c": "Yasuo",
+    "d": "dificil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Fácil línea para ganar. Si empieza Q nivel 1, esquiva sus tornados. No juegues agresivo en nivel 1. Juega seguro hasta nivel 3. Si está con vida completa puede intentar dashear y usar windwall así que solo usa shroud. Luego intenta golpearlo. Juega la línea lento hasta nivel 6. Una vez nivel 6, hazle all-in.",
+    "img": "images/yasuo.png"
+  },
+  {
+    "c": "Yone",
+    "d": "facil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "1+",
+    "t": " Fácil de ganar contra él. En su tercera Q dashea hacia adelante y puedes golpearlo con tu E o esperarlo desde distancia. Tu E countera su Q. No te atrapen sin shroud o E. Su única oportunidad de ganarte es si no tienes spells disponibles.",
+    "img": "images/yone.png"
+  },
+  {
+    "c": "Zed",
+    "d": "medio",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Electrocute",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "Dorans Shield. Párate detrás de minions. Su Q hace mucho daño extra al primer objetivo que golpea así que no seas predecible y te golpee. Puedes usar shroud en el ult de Zed en nivel 6 y entrarle.",
+    "img": "images/zed.png"
+  },
+  {
+    "c": "Zoe",
+    "d": "muy-dificil",
+    "l": "mid",
+    "s": "Flash+Ignite",
+    "r": "Fleet Footwork",
+    "i": "D.Shield",
+    "n": "6+",
+    "t": "VE FLEET FOOTWORK. Increíblemente difícil jugar contra ella. Párate detrás de minions para que no te golpee. No dejes que te golpee con su burbuja de sueño. Si baiteas su E y luego la ulteas, la matas. Es un lane bully. Mantente seguro y gana línea en nivel 6.",
+    "img": "images/zoe.png"
+  }
+];
+
+const tbody = document.getElementById("tbody");
+
+function render(list){
+  tbody.innerHTML = "";
+  list.forEach(m => {
+    tbody.innerHTML += `
+    <tr>
+      <td><img class="champ" src="${m.img}" onerror="this.style.display='none'"><strong>${m.c}</strong></td>
+      <td><span class="badge ${m.d}">${m.d.replace('-', ' ').toUpperCase()}</span></td>
+      <td>${m.l.toUpperCase()}</td>
+      <td>${m.s}</td>
+      <td>${m.r}</td>
+      <td>${m.i}</td>
+      <td><strong>${m.n}</strong></td>
+      <td>${m.t}</td>
+    </tr>`;
+  });
+}
+
+function filtrar(){
+  const search = document.getElementById("search").value.toLowerCase();
+  const dif = document.getElementById("dif").value;
+  const linea = document.getElementById("linea").value;
+
+  const filtered = data.filter(m => {
+    const matchSearch = m.c.toLowerCase().includes(search);
+    const matchDif = dif === "todos" || m.d === dif;
+    const matchLinea = linea === "todos" || m.l === linea;
+    return matchSearch && matchDif && matchLinea;
+  });
+
+  render(filtered);
+}
+
+render(data);
+</script>
+</body>
+</html>
